@@ -1,12 +1,13 @@
 import './index.less'
 
-var container = null,
-	renderer = null,
-	effect = null,
-	controls = null,
-	scene = null,
-	camera = null,
-	cube = null
+let container = null
+let	renderer = null
+let	effect = null
+let	controls = null
+let	scene = null
+let	camera = null
+let	cube = null
+let	VRMode = false
 
 // Set up Three.js
 initThreeJS()
@@ -18,6 +19,8 @@ initScene()
 initVRControls()
 // Run the run loop
 run()
+// Bind Dom Events
+bindEvents()
 
 function initThreeJS() {
 	container = document.getElementById('container')
@@ -41,17 +44,6 @@ function initVREffect() {
 	// Actual cardboard eye separation is 2.5in
 	// Finally, separation is per-eye so divide by 2
 	effect.separation = 2.5 * 0.0254 / 2
-
-	// Set up fullscreen mode handling
-	var fullScreenButton = document.querySelector( '.button' )
-
-	fullScreenButton.onclick = function() {
-		if ( container.mozRequestFullScreen ) {
-			container.mozRequestFullScreen()
-		} else {
-			container.webkitRequestFullscreen()
-		}
-	}
 }
 
 function initScene() {
@@ -67,15 +59,15 @@ function initScene() {
 
 	// Create a texture-mapped cube and add it to the scene
 	// First, create the texture map
-	var mapUrl = require('./images/webvr-logo-512.jpeg')
+	let mapUrl = require('./images/webvr-logo-512.jpeg')
 
-	var loader = new THREE.TextureLoader()
+	let loader = new THREE.TextureLoader()
 
 	loader.load(mapUrl, function(map){
 		// Now, create a Basic material; pass in the map
-		var material = new THREE.MeshBasicMaterial({ map: map })
+		let material = new THREE.MeshBasicMaterial({ map: map })
 		// Create the cube geometry
-		var geometry = new THREE.BoxGeometry(2, 2, 2)
+		let geometry = new THREE.BoxGeometry(2, 2, 2)
 		// And put the geometry and material together into a mesh
 		cube = new THREE.Mesh(geometry, material)
 		// Move the mesh back from the camera and tilt it toward the viewer
@@ -92,30 +84,49 @@ function initVRControls() {
 	controls = new THREE.DeviceOrientationControls(camera)
 }
 
-var duration = 10000; // ms
-var currentTime = Date.now()
+let duration = 10000; // ms
+let currentTime = Date.now()
 
 function animate() {
 	if(!cube){
 		return
 	}
 
-	var now = Date.now()
-	var deltat = now - currentTime
+	let now = Date.now()
+	let deltat = now - currentTime
 	currentTime = now
-	var fract = deltat / duration
-	var angle = Math.PI * 2 * fract
+	let fract = deltat / duration
+	let angle = Math.PI * 2 * fract
 	cube.rotation.y += angle
 }
 
 function run() {
 	requestAnimationFrame(run)
 
-	// Render the scene
-	effect.render( scene, camera )
-	// Update the VR camera controls
-	controls.update()
+	if(VRMode){
+		// ------------- CardBoard Mode ------------------
+		// Render the scene
+		effect.render( scene, camera )
+		// Update the VR camera controls
+		controls.update()
+	}else{
+		// ---------------- Normal Mode ------------------
+		renderer.render( scene, camera )
+	}
+
+	
 	// Spin the cube for next frame
 	animate()
 }
 
+function bindEvents(){
+	document.querySelector('#btn-vr').addEventListener('click', () => {
+		VRMode = !VRMode
+
+		if ( container.mozRequestFullScreen ) {
+			container.mozRequestFullScreen()
+		} else {
+			container.webkitRequestFullscreen()
+		}
+	}, false)
+}
