@@ -9,7 +9,9 @@ let	controls = null
 let	scene = null
 let	camera = null
 let	plane = null
+let btn = null
 let	VRMode = false
+let blah = 0
 
 // Set up Three.js
 initThreeJS()
@@ -91,27 +93,46 @@ function initScene() {
 
             scene.add( object )
 
-            let mapUrl = require('./images/panel.png')
-
-            let loader = new THREE.TextureLoader()
-
-            loader.load(mapUrl, function(map){
-                // Now, create a Basic material; pass in the map
-                let material = new THREE.MeshBasicMaterial({ map: map })
-                // Create the cube geometry
-                let geometry = new THREE.PlaneGeometry(2, 2, 2)
-                // And put the geometry and material together into a mesh
-                plane = new THREE.Mesh(geometry, material)
-                // Move the mesh back from the camera and tilt it toward the viewer
-                // plane.position.z = -6
-                // plane.rotation.x = Math.PI / 5
-                // plane.rotation.y = Math.PI / 5
-                // Finally, add the mesh to our scene
-                object.add(plane)
-            })
-
 
         })
+
+		let panelUrl = require('./images/panel.png')
+
+		let loader = new THREE.TextureLoader()
+
+		loader.load(panelUrl, function(map){
+			// Now, create a Basic material; pass in the map
+			let material = new THREE.MeshBasicMaterial({ map: map })
+			// Create the cube geometry
+			let geometry = new THREE.PlaneGeometry(2, 2, 2)
+			// And put the geometry and material together into a mesh
+			plane = new THREE.Mesh(geometry, material)
+			// Move the mesh back from the camera and tilt it toward the viewer
+			plane.position.z = -2
+            plane.position.y = -1
+			plane.rotation.x = Math.PI / -4
+			// plane.rotation.y = Math.PI / 5
+			// Finally, add the mesh to our scene
+			scene.add(plane)
+		})
+
+		let lookUrl = require('./images/look.png')
+
+		loader.load(lookUrl, function(map){
+			// Now, create a Basic material; pass in the map
+			let material = new THREE.MeshBasicMaterial({ map: map })
+			// Create the cube geometry
+			let geometry = new THREE.CubeGeometry(0.5, 0.5, 0.5)
+			// And put the geometry and material together into a mesh
+			btn = new THREE.Mesh(geometry, material)
+			// Move the mesh back from the camera and tilt it toward the viewer
+			btn.position.z = -1.95
+			btn.position.y = -0.85
+			btn.rotation.x = Math.PI / -4
+			// plane.rotation.y = Math.PI / 5
+			// Finally, add the mesh to our scene
+			scene.add(btn)
+		})
     //
     // })
 
@@ -142,6 +163,16 @@ function initVRControls() {
 function run() {
 	requestAnimationFrame(run)
 
+	blah++
+	if(blah == 400) {
+        let panelUrl = require('./images/look2.png')
+        let loader = new THREE.TextureLoader()
+        loader.load(panelUrl, function (map) {
+            // Now, create a Basic material; pass in the map
+            btn.material = new THREE.MeshBasicMaterial({map: map})
+        })
+    }
+
 	if(VRMode){
 		// ------------- CardBoard Mode ------------------
 		// Render the scene
@@ -153,6 +184,7 @@ function run() {
 
 	// Update the VR camera controls
 	controls.update()
+
 
 	
 	// Spin the cube for next frame
