@@ -105,6 +105,7 @@ var Reticulum = (function () {
         var radiusStep = ( ( this.outerRadius - this.innerRadius ) / this.phiSegments );
         var count = 0;
 
+				// TODO: edited by Bob, may be there're some bug below
 				/*
         for ( var i = 0; i < this.phiSegments + 1; i ++ ) {
 

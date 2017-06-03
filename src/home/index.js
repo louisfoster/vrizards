@@ -97,8 +97,6 @@ function createTractor() {
 	objLoader.setPath( 'src/home/obj/' )
 		objLoader.load( 'tractor.obj', function ( object ) {
 
-		// rayInput.add(object) 
-
 		object.position.x = 0
 		object.position.y = -6
 		object.position.z = 1
@@ -144,6 +142,9 @@ function createTractor() {
 			btn.material = highlightMaterial
 		}, () => {
 			btn.material = defaultMaterial
+			video.play()
+		}, () => {
+			video.stop()
 		}) 
 
 		// Move the mesh back from the camera and tilt it toward the viewer

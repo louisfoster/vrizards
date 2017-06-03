@@ -28,7 +28,7 @@ function init(camera) {
 	});
 }
 
-function add(object, overCallback, outCallback){
+function add(object, overCallback, outCallback, longCallback){
 // *******************************
 	// --- Reticulum ---
 	// have the object react when user looks at it
@@ -38,15 +38,16 @@ function add(object, overCallback, outCallback){
 			// do something when user targets object
 			// this.material.emissive.setHex( 0xffcc00 );
 			// this.material.color = new THREE.Color(0, 0, 0);
-			overCallback()
+			overCallback && overCallback()
 		},
 		onGazeOut: function(){
 			// do something when user moves reticle off targeted object
 			// this.material.emissive.setHex( 0xcc0000 );
 			// this.material.color = new THREE.Color(1, 0, 0);
-			outCallback()
+			outCallback && outCallback()
 		},
 		onGazeLong: function(){
+			longCallback && longCallback()
 			// do something user targetes object for specific time
 			// this.material.emissive.setHex( 0x0000cc );
 			// this.material.color = new THREE.Color(0, 0, 0);

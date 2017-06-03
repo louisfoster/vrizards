@@ -1,8 +1,10 @@
+let video
+
 function init(scene){
 	let geometry = new THREE.SphereBufferGeometry( 500, 60, 40 );
 	geometry.scale( - 1, 1, 1 );
 
-	let video = document.createElement( 'video' );
+	video = document.createElement( 'video' );
 	video.width = 640;
 	video.height = 360;
 	video.loop = true;
@@ -35,4 +37,12 @@ function init(scene){
 	return mesh
 }
 
-export default {init}
+function play(){
+	video.play()
+}
+
+function stop(){
+	video.pause()
+}
+
+export default {init, play, stop}
