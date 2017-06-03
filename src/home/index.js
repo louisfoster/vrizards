@@ -1,5 +1,6 @@
 import './index.less'
 import video from './video'
+import rayInput from './rayInput'
 
 let container = null
 let	renderer = null
@@ -9,11 +10,6 @@ let	scene = null
 let	camera = null
 let	cube = null
 let	VRMode = false
-
-window.onerror = (e) => {
-	alert(e.stringify(e))
-}
-
 
 // Set up Three.js
 initThreeJS()
@@ -63,7 +59,7 @@ function initScene() {
 
 	scene.add(camera)
 
-	video.add(scene)
+	scene.add(video.init())
 
 	// Create a texture-mapped cube and add it to the scene
 	// First, create the texture map
