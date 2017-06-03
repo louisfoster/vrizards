@@ -10,8 +10,9 @@ let	scene = null
 let	camera = null
 let	plane = null
 let btn = null
+let wheels = null
 let	VRMode = false
-let blah = 0
+let wheelSpin = true
 
 // Set up Three.js
 initThreeJS()
@@ -63,78 +64,121 @@ function initScene() {
 
 	scene.add(video.init())
 
+
+    var listener = new THREE.AudioListener();
+    camera.add( listener );
+    var audioLoader = new THREE.AudioLoader();
+    var sound4 = new THREE.Audio( listener );
+    audioLoader.load( 'src/home/videos/tractor.mp3', function( buffer ) {
+        sound4.setBuffer( buffer );
+        sound4.setLoop(true);
+        sound4.setVolume(0.02);
+        sound4.play();
+    });
+
     //
-    var ambient = new THREE.AmbientLight( 0x444444 );
+    var ambient = new THREE.AmbientLight( 0x222222 );
     scene.add( ambient );
-    var directionalLight = new THREE.DirectionalLight( 0xffeedd );
-    directionalLight.position.set( 0, 10, 10 ).normalize();
+    var directionalLight = new THREE.DirectionalLight( 0xbbbbbb );
+    directionalLight.position.set( 0, 200, 50 ).normalize();
     scene.add( directionalLight );
 
-    // let mtlLoader = new THREE.MTLLoader()
-    // mtlLoader.setPath( 'src/home/obj/' )
-    // mtlLoader.load( 'Excavator.mtl', function( materials ) {
+	let objLoader = new THREE.OBJLoader()
 
-        // materials.preload()
+	objLoader.setPath( 'src/home/obj/' )
+	objLoader.load( 'tractorbody.obj', function ( object ) {
 
-		let objLoader = new THREE.OBJLoader()
+		var material = new THREE.MeshPhongMaterial( { color: 0xdd2211 } );
 
-        // objLoader.setMaterials( materials )
+		object.traverse( function ( child ) {
 
-		objLoader.setPath( 'src/home/obj/' )
-        objLoader.load( 'tractor.obj', function ( object ) {
+			if ( child instanceof THREE.Mesh ) {
 
-            object.position.x = 0
-            object.position.y = -6
-         	object.position.z = 1
+				child.material = material;
 
-			object.scale.x = 12
-            object.scale.y = 12
-            object.scale.z = 12
+			}
 
-            scene.add( object )
+		} );
+
+		object.position.x = 0
+		object.position.y = -6
+		object.position.z = 1
+
+		object.scale.x = 12
+		object.scale.y = 12
+		object.scale.z = 12
+
+		scene.add( object )
 
 
-        })
+	})
 
-		let panelUrl = require('./images/panel.png')
+	objLoader.load( 'tracwheels.obj', function ( object ) {
 
-		let loader = new THREE.TextureLoader()
+		var material = new THREE.MeshLambertMaterial( { color: 0x333333 } );
 
-		loader.load(panelUrl, function(map){
-			// Now, create a Basic material; pass in the map
-			let material = new THREE.MeshBasicMaterial({ map: map })
-			// Create the cube geometry
-			let geometry = new THREE.PlaneGeometry(2, 2, 2)
-			// And put the geometry and material together into a mesh
-			plane = new THREE.Mesh(geometry, material)
-			// Move the mesh back from the camera and tilt it toward the viewer
-			plane.position.z = -2
-            plane.position.y = -1
-			plane.rotation.x = Math.PI / -4
-			// plane.rotation.y = Math.PI / 5
-			// Finally, add the mesh to our scene
-			scene.add(plane)
-		})
+		object.traverse( function ( child ) {
 
-		let lookUrl = require('./images/look.png')
+			if ( child instanceof THREE.Mesh ) {
 
-		loader.load(lookUrl, function(map){
-			// Now, create a Basic material; pass in the map
-			let material = new THREE.MeshBasicMaterial({ map: map })
-			// Create the cube geometry
-			let geometry = new THREE.CubeGeometry(0.5, 0.5, 0.5)
-			// And put the geometry and material together into a mesh
-			btn = new THREE.Mesh(geometry, material)
-			// Move the mesh back from the camera and tilt it toward the viewer
-			btn.position.z = -1.95
-			btn.position.y = -0.85
-			btn.rotation.x = Math.PI / -4
-			// plane.rotation.y = Math.PI / 5
-			// Finally, add the mesh to our scene
-			scene.add(btn)
-		})
-    //
-    // })
+				child.material = material;
+
+			}
+
+		} );
+
+		object.position.x = 0
+		object.position.y = -3.5
+		object.position.z = -1.8
+
+		object.scale.x = 12
+		object.scale.y = 12
+		object.scale.z = 12
+
+		wheels = object
+
+		scene.add( object )
+
+
+	})
+
+	let panelUrl = require('./images/panel.png')
+
+	let loader = new THREE.TextureLoader()
+
+	loader.load(panelUrl, function(map){
+		// Now, create a Basic material; pass in the map
+		let material = new THREE.MeshBasicMaterial({ map: map })
+		// Create the cube geometry
+		let geometry = new THREE.PlaneGeometry(2, 2, 2)
+		// And put the geometry and material together into a mesh
+		plane = new THREE.Mesh(geometry, material)
+		// Move the mesh back from the camera and tilt it toward the viewer
+		plane.position.z = -2
+		plane.position.y = -1
+		plane.rotation.x = Math.PI / -4
+		// plane.rotation.y = Math.PI / 5
+		// Finally, add the mesh to our scene
+		scene.add(plane)
+	})
+
+	let lookUrl = require('./images/look.png')
+
+	loader.load(lookUrl, function(map){
+		// Now, create a Basic material; pass in the map
+		let material = new THREE.MeshBasicMaterial({ map: map })
+		// Create the cube geometry
+		let geometry = new THREE.CubeGeometry(0.5, 0.5, 0.5)
+		// And put the geometry and material together into a mesh
+		btn = new THREE.Mesh(geometry, material)
+		// Move the mesh back from the camera and tilt it toward the viewer
+		btn.position.z = -1.95
+		btn.position.y = -0.85
+		btn.rotation.x = Math.PI / -4
+		// plane.rotation.y = Math.PI / 5
+		// Finally, add the mesh to our scene
+		scene.add(btn)
+	})
 
 
 }
@@ -144,34 +188,24 @@ function initVRControls() {
 	controls = new THREE.DeviceOrientationControls(camera)
 }
 
-// let duration = 10000; // ms
-// let currentTime = Date.now()
+let duration = 10000; // ms
+let currentTime = Date.now()
 
-// function animate() {
-// 	// if(!cube){
-// 	// 	return
-// 	// }
-//
-// 	let now = Date.now()
-// 	let deltat = now - currentTime
-// 	currentTime = now
-// 	// let fract = deltat / duration
-// 	// let angle = Math.PI * 2 * fract
-// 	// cube.rotation.y += angle
-// }
+function animate() {
+	if(!wheels || !wheelSpin){
+		return
+	}
+
+	let now = Date.now()
+	let deltat = now - currentTime
+	currentTime = now
+	let fract = deltat / duration
+	let angle = Math.PI * 2 * fract
+	wheels.rotation.x -= angle
+}
 
 function run() {
 	requestAnimationFrame(run)
-
-	blah++
-	if(blah == 400) {
-        let panelUrl = require('./images/look2.png')
-        let loader = new THREE.TextureLoader()
-        loader.load(panelUrl, function (map) {
-            // Now, create a Basic material; pass in the map
-            btn.material = new THREE.MeshBasicMaterial({map: map})
-        })
-    }
 
 	if(VRMode){
 		// ------------- CardBoard Mode ------------------
@@ -188,7 +222,11 @@ function run() {
 
 	
 	// Spin the cube for next frame
-	// animate()
+	animate()
+}
+
+function wheelStahp() {
+	wheelSpin = false
 }
 
 function bindEvents(){
