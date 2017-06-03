@@ -1,4 +1,5 @@
 import './index.less'
+import video from './video'
 
 let container = null
 let	renderer = null
@@ -8,6 +9,11 @@ let	scene = null
 let	camera = null
 let	cube = null
 let	VRMode = false
+
+window.onerror = (e) => {
+	alert(e.stringify(e))
+}
+
 
 // Set up Three.js
 initThreeJS()
@@ -56,6 +62,8 @@ function initScene() {
 	camera = new THREE.PerspectiveCamera( 90, window.innerWidth / window.innerHeight, 1, 4000 )
 
 	scene.add(camera)
+
+	video.add(scene)
 
 	// Create a texture-mapped cube and add it to the scene
 	// First, create the texture map
@@ -107,12 +115,13 @@ function run() {
 		// ------------- CardBoard Mode ------------------
 		// Render the scene
 		effect.render( scene, camera )
-		// Update the VR camera controls
-		controls.update()
 	}else{
 		// ---------------- Normal Mode ------------------
 		renderer.render( scene, camera )
 	}
+
+	// Update the VR camera controls
+	controls.update()
 
 	
 	// Spin the cube for next frame
