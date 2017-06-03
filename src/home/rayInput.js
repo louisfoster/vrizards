@@ -1,22 +1,64 @@
-function init(camera, renderer) {
-		// Here, camera is an instance of THREE.Camera,
-	// If second HTMLElement arg is provided, it will be addEventListener'ed.
-	let input = new RayInput(camera, renderer.domElement);
-
-	// Register a callback whenever an object is acted on.
-	input.on('raydown', (opt_mesh) => {
-		// Called when an object was activated. If there is a selected object,
-		// opt_mesh is that object.
-	});
-
-	// Register a callback when an object is selected.
-	input.on('rayover', (mesh) => {
-		// Called when an object was selected.
+function init(camera) {
+	// initiate Reticulum so it loads up 
+	Reticulum.init(camera, {
+		proximity: false,
+		reticle: {
+			visible: true,
+			restPoint: 1000, //Defines the reticle's resting point when no object has been targeted
+			color: 0xcc0000,
+			innerRadius: 0.0001,
+			outerRadius: 0.003,
+			hover: {
+				color: 0xcc0000,
+				innerRadius: 0.02,
+				outerRadius: 0.024,
+				speed: 5,
+				vibrate: 50 //Set to 0 or [] to disable
+			}
+		},
+		fuse: {
+			visible: true,
+			duration: 2.5,
+			color: 0x00fff6,
+			innerRadius: 0.045,
+			outerRadius: 0.06,
+			vibrate: 0, //Set to 0 or [] to disable
+			clickCancelFuse: false //If users clicks on targeted object fuse is canceled
+		}
 	});
 }
 
-function addObject(object){
-	input.add(object)
+function add(object){
+// *******************************
+	// --- Reticulum ---
+	// have the object react when user looks at it
+	// track the object
+	Reticulum.add( object, {
+		onGazeOver: function(){
+			// do something when user targets object
+			// this.material.emissive.setHex( 0xffcc00 );
+			this.material.color = new THREE.Color(0, 0, 0);
+		},
+		onGazeOut: function(){
+			// do something when user moves reticle off targeted object
+			// this.material.emissive.setHex( 0xcc0000 );
+			this.material.color = new THREE.Color(1, 0, 0);
+		},
+		onGazeLong: function(){
+			// do something user targetes object for specific time
+			// this.material.emissive.setHex( 0x0000cc );
+			this.material.color = new THREE.Color(0, 0, 0);
+		},
+		onGazeClick: function(){
+			// have the object react when user clicks / taps on targeted object
+			// this.material.emissive.setHex( 0x00cccc * Math.random() );
+			this.material.color = new THREE.Color(0, 0, 0);
+		}
+	});
 }
 
-export default {init, addObject}
+function update() {
+	Reticulum.update()
+}
+
+export default {init, update, add}

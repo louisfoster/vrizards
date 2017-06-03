@@ -19,6 +19,10 @@ initVREffect()
 initScene()
 // Set up VR camera controls
 initVRControls()
+
+// init ray input
+initRayInput()
+
 // Run the run loop
 run()
 // Bind Dom Events
@@ -35,6 +39,10 @@ function initThreeJS() {
 	window.addEventListener('resize', function(event) {
 		renderer.setSize(window.innerWidth, window.innerHeight)
 	}, false)
+}
+
+function initRayInput() {
+	rayInput.init(camera)
 }
 
 function initVREffect() {
@@ -62,11 +70,11 @@ function initScene() {
 	scene.add(video.init())
 
     //
-    var ambient = new THREE.AmbientLight( 0x444444 );
-    scene.add( ambient );
-    var directionalLight = new THREE.DirectionalLight( 0xffeedd );
-    directionalLight.position.set( 0, 10, 10 ).normalize();
-    scene.add( directionalLight );
+    var ambient = new THREE.AmbientLight( 0x444444 )
+    scene.add( ambient )
+    var directionalLight = new THREE.DirectionalLight( 0xffeedd )
+    directionalLight.position.set( 0, 10, 10 ).normalize()
+    scene.add( directionalLight )
 
     // let mtlLoader = new THREE.MTLLoader()
     // mtlLoader.setPath( 'src/home/obj/' )
@@ -81,6 +89,8 @@ function initScene() {
 		objLoader.setPath( 'src/home/obj/' )
         objLoader.load( 'tractor.obj', function ( object ) {
 
+					// rayInput.add(object) 
+
             object.position.x = 0
             object.position.y = -6
          	object.position.z = 1
@@ -94,6 +104,29 @@ function initScene() {
         })
     //
     // })
+
+	// Create a texture-mapped cube and add it to the scene
+	// First, create the texture map
+	var mapUrl = 'src/home/images/webvr-logo-512.jpeg';
+
+	var loader = new THREE.TextureLoader();
+
+	loader.load(mapUrl, function(map){
+		// Now, create a Basic material; pass in the map
+		var material = new THREE.MeshBasicMaterial({ map: map });
+		// Create the cube geometry
+		var geometry = new THREE.BoxGeometry(2, 2, 2);
+		// And put the geometry and material together into a mesh
+		cube = new THREE.Mesh(geometry);
+		// Move the mesh back from the camera and tilt it toward the viewer
+		cube.position.z = -6;
+		cube.rotation.x = Math.PI / 5;
+		cube.rotation.y = Math.PI / 5;
+		// Finally, add the mesh to our scene
+		scene.add(cube);
+		rayInput.add(cube) 
+	});
+				
 
 
 }
@@ -134,6 +167,8 @@ function run() {
 	// Update the VR camera controls
 	controls.update()
 
+	// Update the ray input
+	rayInput.update()
 	
 	// Spin the cube for next frame
 	// animate()
