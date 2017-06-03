@@ -8,7 +8,7 @@ function init(scene){
 	video.loop = true;
 	video.muted = true;
 	// video.src = 'src/home/videos/ClashofClans.mp4';
-	video.src = 'src/home/videos/tractor.mp4';
+	video.src = 'src/home/videos/tractor1.mp4';
 	// https://stackoverflow.com/questions/5054560/can-i-avoid-the-native-fullscreen-video-player-with-html5-on-iphone-or-android
 	video.setAttribute( 'webkit-playsinline', 'true' );
 	video.setAttribute( 'playsinline', 'true' );
@@ -29,6 +29,8 @@ function init(scene){
 	let material = new THREE.MeshBasicMaterial( { map : texture } );
 
 	let mesh = new THREE.Mesh( geometry, material );
+
+	mesh.rotation.y = Math.PI / 2
 
 	return mesh
 }

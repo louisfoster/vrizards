@@ -8,7 +8,8 @@ let	effect = null
 let	controls = null
 let	scene = null
 let	camera = null
-let	cube = null
+let	plane = null
+let btn = null
 let	VRMode = false
 
 // Set up Three.js
@@ -76,59 +77,90 @@ function initScene() {
     directionalLight.position.set( 0, 10, 10 ).normalize()
     scene.add( directionalLight )
 
-    // let mtlLoader = new THREE.MTLLoader()
-    // mtlLoader.setPath( 'src/home/obj/' )
-    // mtlLoader.load( 'Excavator.mtl', function( materials ) {
+	createTractor()
 
-        // materials.preload()
+}
 
-		let objLoader = new THREE.OBJLoader()
+let defaultMaterial,  highlightMaterial
 
-        // objLoader.setMaterials( materials )
+function createTractor() {
+	// let mtlLoader = new THREE.MTLLoader()
+	// mtlLoader.setPath( 'src/home/obj/' )
+	// mtlLoader.load( 'Excavator.mtl', function( materials ) {
 
-		objLoader.setPath( 'src/home/obj/' )
-        objLoader.load( 'tractor.obj', function ( object ) {
+	// materials.preload()
 
-					// rayInput.add(object) 
+	let objLoader = new THREE.OBJLoader()
 
-            object.position.x = 0
-            object.position.y = -6
-         	object.position.z = 1
+	// objLoader.setMaterials( materials )
 
-			object.scale.x = 12
-            object.scale.y = 12
-            object.scale.z = 12
+	objLoader.setPath( 'src/home/obj/' )
+		objLoader.load( 'tractor.obj', function ( object ) {
 
-            scene.add( object )
+		// rayInput.add(object) 
 
-        })
-    //
-    // })
+		object.position.x = 0
+		object.position.y = -6
+		object.position.z = 1
 
-	// Create a texture-mapped cube and add it to the scene
-	// First, create the texture map
-	var mapUrl = 'src/home/images/webvr-logo-512.jpeg';
+		object.scale.x = 12
+			object.scale.y = 12
+			object.scale.z = 12
 
-	var loader = new THREE.TextureLoader();
+			scene.add( object )
+		})
 
-	loader.load(mapUrl, function(map){
+	let panelUrl = require('./images/panel.png')
+
+	let loader = new THREE.TextureLoader()
+
+	loader.load(panelUrl, function(map){
 		// Now, create a Basic material; pass in the map
-		var material = new THREE.MeshBasicMaterial({ map: map });
+		let material = new THREE.MeshBasicMaterial({ map: map })
 		// Create the cube geometry
-		var geometry = new THREE.BoxGeometry(2, 2, 2);
+		let geometry = new THREE.PlaneGeometry(2, 2, 2)
 		// And put the geometry and material together into a mesh
-		cube = new THREE.Mesh(geometry);
+		plane = new THREE.Mesh(geometry, material)
 		// Move the mesh back from the camera and tilt it toward the viewer
-		cube.position.z = -6;
-		cube.rotation.x = Math.PI / 5;
-		cube.rotation.y = Math.PI / 5;
+		plane.position.z = -2
+					plane.position.y = -1
+		plane.rotation.x = Math.PI / -4
+		// plane.rotation.y = Math.PI / 5
 		// Finally, add the mesh to our scene
-		scene.add(cube);
-		rayInput.add(cube) 
-	});
-				
+		scene.add(plane)
+	})
 
+	let lookUrl = require('./images/look.png')
 
+	loader.load(lookUrl, function(map){
+		// Now, create a Basic material; pass in the map
+		let material = defaultMaterial = new THREE.MeshBasicMaterial({ map: map })
+		// Create the cube geometry
+		let geometry = new THREE.CubeGeometry(0.5, 0.5, 0.5)
+		// And put the geometry and material together into a mesh
+		btn = new THREE.Mesh(geometry, material)
+
+		rayInput.add(btn, () => {
+			btn.material = highlightMaterial
+		}, () => {
+			btn.material = defaultMaterial
+		}) 
+
+		// Move the mesh back from the camera and tilt it toward the viewer
+		btn.position.z = -1.95
+		btn.position.y = -0.85
+		btn.rotation.x = Math.PI / -4
+		// plane.rotation.y = Math.PI / 5
+		// Finally, add the mesh to our scene
+		scene.add(btn)
+	})
+
+	let higlightMapUrl = require('./images/look2.png')
+
+	loader.load(higlightMapUrl, function (map) {
+		// Now, create a Basic material; pass in the map
+		highlightMaterial = new THREE.MeshBasicMaterial({map: map})
+	})
 }
 
 function initVRControls() {
@@ -154,6 +186,7 @@ function initVRControls() {
 
 function run() {
 	requestAnimationFrame(run)
+
 
 	if(VRMode){
 		// ------------- CardBoard Mode ------------------
