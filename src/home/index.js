@@ -22,6 +22,10 @@ initVREffect()
 initScene()
 // Set up VR camera controls
 initVRControls()
+
+// init ray input
+initRayInput()
+
 // Run the run loop
 run()
 // Bind Dom Events
@@ -38,6 +42,10 @@ function initThreeJS() {
 	window.addEventListener('resize', function(event) {
 		renderer.setSize(window.innerWidth, window.innerHeight)
 	}, false)
+}
+
+function initRayInput() {
+	rayInput.init(camera)
 }
 
 function initVREffect() {
@@ -76,29 +84,37 @@ function initScene() {
         sound4.play();
     });
 
-    //
     var ambient = new THREE.AmbientLight( 0x222222 );
     scene.add( ambient );
     var directionalLight = new THREE.DirectionalLight( 0xbbbbbb );
     directionalLight.position.set( 0, 200, 50 ).normalize();
     scene.add( directionalLight );
 
-	let objLoader = new THREE.OBJLoader()
 
-	objLoader.setPath( 'src/home/obj/' )
-	objLoader.load( 'tractorbody.obj', function ( object ) {
+	createTractor()
 
-		var material = new THREE.MeshPhongMaterial( { color: 0xdd2211 } );
+}
 
-		object.traverse( function ( child ) {
+let defaultMaterial,  highlightMaterial
 
-			if ( child instanceof THREE.Mesh ) {
+function createTractor() {
 
-				child.material = material;
+    let objLoader = new THREE.OBJLoader()
 
-			}
+    objLoader.setPath( 'src/home/obj/' )
+    objLoader.load( 'tractorbody.obj', function ( object ) {
 
-		} );
+        var material = new THREE.MeshPhongMaterial( { color: 0xdd2211 } );
+
+        object.traverse( function ( child ) {
+
+            if ( child instanceof THREE.Mesh ) {
+
+                child.material = material;
+
+            }
+
+        } );
 
 		object.position.x = 0
 		object.position.y = -6
@@ -142,6 +158,44 @@ function initScene() {
 
 	})
 
+	// let panelUrl = require('./images/panel.png')
+    //
+	// let loader = new THREE.TextureLoader()
+    //
+	// loader.load(panelUrl, function(map){
+	// 	// Now, create a Basic material; pass in the map
+	// 	let material = new THREE.MeshBasicMaterial({ map: map })
+	// 	// Create the cube geometry
+	// 	let geometry = new THREE.PlaneGeometry(2, 2, 2)
+	// 	// And put the geometry and material together into a mesh
+	// 	plane = new THREE.Mesh(geometry, material)
+	// 	// Move the mesh back from the camera and tilt it toward the viewer
+	// 	plane.position.z = -2
+	// 	plane.position.y = -1
+	// 	plane.rotation.x = Math.PI / -4
+	// 	// plane.rotation.y = Math.PI / 5
+	// 	// Finally, add the mesh to our scene
+	// 	scene.add(plane)
+	// })
+    //
+	// let lookUrl = require('./images/look.png')
+    //
+	// loader.load(lookUrl, function(map){
+	// 	// Now, create a Basic material; pass in the map
+	// 	let material = new THREE.MeshBasicMaterial({ map: map })
+	// 	// Create the cube geometry
+	// 	let geometry = new THREE.CubeGeometry(0.5, 0.5, 0.5)
+	// 	// And put the geometry and material together into a mesh
+	// 	btn = new THREE.Mesh(geometry, material)
+	// 	// Move the mesh back from the camera and tilt it toward the viewer
+	// 	btn.position.z = -1.95
+	// 	btn.position.y = -0.85
+	// 	btn.rotation.x = Math.PI / -4
+	// 	// plane.rotation.y = Math.PI / 5
+	// 	// Finally, add the mesh to our scene
+	// 	scene.add(btn)
+	// })
+
 	let panelUrl = require('./images/panel.png')
 
 	let loader = new THREE.TextureLoader()
@@ -155,7 +209,7 @@ function initScene() {
 		plane = new THREE.Mesh(geometry, material)
 		// Move the mesh back from the camera and tilt it toward the viewer
 		plane.position.z = -2
-		plane.position.y = -1
+					plane.position.y = -1
 		plane.rotation.x = Math.PI / -4
 		// plane.rotation.y = Math.PI / 5
 		// Finally, add the mesh to our scene
@@ -166,11 +220,22 @@ function initScene() {
 
 	loader.load(lookUrl, function(map){
 		// Now, create a Basic material; pass in the map
-		let material = new THREE.MeshBasicMaterial({ map: map })
+		let material = defaultMaterial = new THREE.MeshBasicMaterial({ map: map })
 		// Create the cube geometry
 		let geometry = new THREE.CubeGeometry(0.5, 0.5, 0.5)
 		// And put the geometry and material together into a mesh
 		btn = new THREE.Mesh(geometry, material)
+
+		rayInput.add(btn, () => {
+			btn.material = highlightMaterial
+		}, () => {
+			btn.material = defaultMaterial
+			video.play()
+		}, () => {
+			video.stop()
+			wheelStahp()
+		}) 
+
 		// Move the mesh back from the camera and tilt it toward the viewer
 		btn.position.z = -1.95
 		btn.position.y = -0.85
@@ -180,7 +245,12 @@ function initScene() {
 		scene.add(btn)
 	})
 
+	let higlightMapUrl = require('./images/look2.png')
 
+	loader.load(higlightMapUrl, function (map) {
+		// Now, create a Basic material; pass in the map
+		highlightMaterial = new THREE.MeshBasicMaterial({map: map})
+	})
 }
 
 function initVRControls() {
@@ -219,7 +289,8 @@ function run() {
 	// Update the VR camera controls
 	controls.update()
 
-
+	// Update the ray input
+	rayInput.update()
 	
 	// Spin the cube for next frame
 	animate()
