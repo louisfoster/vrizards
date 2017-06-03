@@ -1,5 +1,6 @@
 import './index.less'
 import video from './video'
+import rayInput from './rayInput'
 
 let container = null
 let	renderer = null
@@ -9,11 +10,6 @@ let	scene = null
 let	camera = null
 let	plane = null
 let	VRMode = false
-
-window.onerror = (e) => {
-	alert(e.stringify(e))
-}
-
 
 // Set up Three.js
 initThreeJS()
@@ -63,6 +59,7 @@ function initScene() {
 
 	scene.add(camera)
 
+	scene.add(video.init())
 
     //
     var ambient = new THREE.AmbientLight( 0x444444 );
@@ -117,9 +114,6 @@ function initScene() {
         })
     //
     // })
-
-
-	video.add(scene)
 
 
 }

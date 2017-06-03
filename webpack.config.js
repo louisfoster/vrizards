@@ -62,7 +62,7 @@ var common = {
       {
         test: /\.js?$/,
         loaders: ['babel'],
-        include: APP_PATH
+        include: [APP_PATH, 'node_modules']
       },
       {
         test: /\.png|jpg|jpeg|gif|svg$/,
