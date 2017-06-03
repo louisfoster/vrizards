@@ -13,6 +13,10 @@ function init(scene){
 	video.setAttribute( 'webkit-playsinline', 'true' );
 	video.setAttribute( 'playsinline', 'true' );
 
+	video.onended = function() {
+		console.log("ended");
+	}
+
 	video.addEventListener('contextmenu', function (e) { e.preventDefault(); e.stopPropagation(); }, false);
 
 	// hide the controls if they're visible

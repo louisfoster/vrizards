@@ -13,6 +13,7 @@ let btn = null
 let wheels = null
 let	VRMode = false
 let wheelSpin = true
+let sound = null
 
 // Set up Three.js
 initThreeJS()
@@ -76,12 +77,12 @@ function initScene() {
     var listener = new THREE.AudioListener();
     camera.add( listener );
     var audioLoader = new THREE.AudioLoader();
-    var sound4 = new THREE.Audio( listener );
+    sound = new THREE.Audio( listener );
     audioLoader.load( 'src/home/videos/tractor.mp3', function( buffer ) {
-        sound4.setBuffer( buffer );
-        sound4.setLoop(true);
-        sound4.setVolume(0.02);
-        sound4.play();
+        sound.setBuffer( buffer );
+        sound.setLoop(true);
+        sound.setVolume(0.02);
+        sound.play();
     });
 
     var ambient = new THREE.AmbientLight( 0x222222 );
@@ -193,8 +194,12 @@ function createTractor() {
 		}, () => {
 			btn.material = defaultMaterial
 			video.play()
+            sound.play()
+			wheelStart()
 		}, () => {
 			video.stop()
+            sound.pause()
+			// sound
 			wheelStahp()
 		}) 
 
@@ -260,6 +265,10 @@ function run() {
 
 function wheelStahp() {
 	wheelSpin = false
+}
+
+function wheelStart() {
+	wheelSpin = true
 }
 
 function bindEvents(){
