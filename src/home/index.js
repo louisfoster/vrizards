@@ -59,7 +59,7 @@ function initScene() {
 	// Note that this camera's FOV is ignored in favor of the
 	// Oculus-supplied FOV for each used inside VREffect.
 	// See VREffect.js h/t Michael Blix
-	camera = new THREE.PerspectiveCamera( 90, window.innerWidth / window.innerHeight, 1, 4000 )
+	camera = new THREE.PerspectiveCamera( 90, window.innerWidth / window.innerHeight, 0.1, 4000 )
 
 	scene.add(camera)
 
@@ -84,10 +84,13 @@ function initScene() {
 		objLoader.setPath( 'src/home/obj/' )
         objLoader.load( 'tractor.obj', function ( object ) {
 
-            object.position.x = 0;
-            object.position.y = -0.8;
-         	object.position.z = -0.9;
+            object.position.x = 0
+            object.position.y = -6
+         	object.position.z = 1
 
+			object.scale.x = 12
+            object.scale.y = 12
+            object.scale.z = 12
 
             scene.add( object )
 
