@@ -1,4 +1,5 @@
 import './index.less'
+import video from './video'
 
 let container = null
 let	renderer = null
@@ -8,6 +9,11 @@ let	scene = null
 let	camera = null
 let	cube = null
 let	VRMode = false
+
+window.onerror = (e) => {
+	alert(e.stringify(e))
+}
+
 
 // Set up Three.js
 initThreeJS()
@@ -90,6 +96,9 @@ function initScene() {
     // })
 
 
+	video.add(scene)
+
+
 }
 
 function initVRControls() {
@@ -120,12 +129,13 @@ function run() {
 		// ------------- CardBoard Mode ------------------
 		// Render the scene
 		effect.render( scene, camera )
-		// Update the VR camera controls
-		controls.update()
 	}else{
 		// ---------------- Normal Mode ------------------
 		renderer.render( scene, camera )
 	}
+
+	// Update the VR camera controls
+	controls.update()
 
 	
 	// Spin the cube for next frame
