@@ -7,7 +7,7 @@ function init(scene){
 	video = document.createElement( 'video' );
 	video.width = 640;
 	video.height = 360;
-	video.loop = true;
+	video.loop = false;
 	video.muted = true;
 	video.src = 'src/home/videos/tractor1.mp4';
 	video.setAttribute( 'webkit-playsinline', 'true' );

@@ -11,9 +11,16 @@ let	camera = null
 let	plane = null
 let btn = null
 let wheels = null
+let tractorBody = null
 let	VRMode = false
 let wheelSpin = true
 let sound = null
+
+let isStart = false
+
+let clock = new THREE.Clock()
+let elapsedTimeSum = 0
+
 
 // Set up Three.js
 initThreeJS()
@@ -116,6 +123,8 @@ function createTractor() {
             }
 
         } );
+
+		tractorBody = object
 
 		object.position.x = 0
 		object.position.y = -6
@@ -242,6 +251,12 @@ function animate() {
 }
 
 function run() {
+	elapsedTimeSum += clock.getElapsedTime()
+
+	if(elapsedTimeSum > 2500){
+		isStart = true
+	}
+
 	requestAnimationFrame(run)
 
 	if(VRMode){
@@ -261,6 +276,22 @@ function run() {
 	
 	// Spin the cube for next frame
 	animate()
+
+	if(!tractorBody){
+		return
+	}
+
+	if(isStart){
+		tractorBody.visible = true
+		wheels.visible = true
+		plane.visible = true
+		btn.visible = true
+	}else{
+		tractorBody.visible = false
+		wheels.visible = false
+		plane.visible = false
+		btn.visible = false
+	}
 }
 
 function wheelStahp() {
