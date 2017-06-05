@@ -12,7 +12,7 @@ let	plane = null
 let btn = null
 let wheels = null
 let tractorBody = null
-let	VRMode = false
+let	VRMode = true
 let wheelSpin = true
 let sound = null
 
@@ -85,7 +85,7 @@ function initScene() {
     camera.add( listener );
     var audioLoader = new THREE.AudioLoader();
     sound = new THREE.Audio( listener );
-    audioLoader.load( 'src/home/videos/tractor.mp3', function( buffer ) {
+    audioLoader.load( '../src/home/videos/tractor.mp3', function( buffer ) {
         sound.setBuffer( buffer );
         sound.setLoop(true);
         sound.setVolume(0.02);
@@ -109,7 +109,7 @@ function createTractor() {
 
     let objLoader = new THREE.OBJLoader()
 
-    objLoader.setPath( 'src/home/obj/' )
+    objLoader.setPath( '../src/home/obj/' )
     objLoader.load( 'tractorbody.obj', function ( object ) {
 
         var material = new THREE.MeshPhongMaterial( { color: 0xdd2211 } );
@@ -253,7 +253,7 @@ function animate() {
 function run() {
 	elapsedTimeSum += clock.getElapsedTime()
 
-	if(elapsedTimeSum > 2500){
+	if(elapsedTimeSum > 5000){
 		isStart = true
 	}
 

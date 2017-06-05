@@ -9,7 +9,7 @@ function init(scene){
 	video.height = 360;
 	video.loop = false;
 	video.muted = true;
-	video.src = 'src/home/videos/tractor1.mp4';
+	video.src = '../src/home/videos/tractor1.mp4';
 	video.setAttribute( 'webkit-playsinline', 'true' );
 	video.setAttribute( 'playsinline', 'true' );
 
