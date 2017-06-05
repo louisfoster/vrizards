@@ -12,7 +12,7 @@ let	plane = null
 let btn = null
 let wheels = null
 let tractorBody = null
-let	VRMode = true
+let	VRMode = false
 let wheelSpin = true
 let sound = null
 
@@ -50,6 +50,12 @@ function initThreeJS() {
 	window.addEventListener('resize', function(event) {
 		renderer.setSize(window.innerWidth, window.innerHeight)
 	}, false)
+
+	if ( container.mozRequestFullScreen ) {
+		container.mozRequestFullScreen()
+	} else {
+		container.webkitRequestFullscreen()
+	}
 }
 
 function initRayInput() {
@@ -306,10 +312,5 @@ function bindEvents(){
 	document.querySelector('#btn-vr').addEventListener('click', () => {
 		VRMode = !VRMode
 
-		if ( container.mozRequestFullScreen ) {
-			container.mozRequestFullScreen()
-		} else {
-			container.webkitRequestFullscreen()
-		}
 	}, false)
 }
